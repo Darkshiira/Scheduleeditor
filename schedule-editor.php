@@ -11,8 +11,8 @@ Author: Hanna, Araceli, Terese, June, and Fosiya.
 class schedule_editor_widget extends WP_Widget {
     public function __construct() {
         parent::__construct(
-            'custom_feedback_form_widget',
-            'Custom Feedback Form Widget',
+            'schedule_editor_widget',
+            'Schedule Editor Widget',
             array(
                 'description' => 'Displays the custom feedback form as a widget.',
             )
