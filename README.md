@@ -1,2 +1,2 @@
 # Scheduleeditor
-Plugin for wordpress
+Plugin for wordpress adding categories relevant for scheduling 
