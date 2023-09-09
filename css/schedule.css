@@ -1,4 +1,12 @@
+.schedule{
+    border: 3px solid black;
 
+}
+.schedule{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+
+}
 .schedule-entry{
     border:2px solid purple;
     color:blue
