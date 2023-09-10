@@ -28,9 +28,9 @@ function schedule_content_register_post_type()
         'public' => true,
         'hierarchical' => false,
         'supports' => array(
-            'title',
+            //'title',
             // 'editor', 
-            //'excerpt', 
+            'excerpt', 
             //'custom-fields',
            // 'thumbnail',
             // 'page-attributes'
