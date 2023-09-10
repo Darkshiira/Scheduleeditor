@@ -8,13 +8,15 @@
 
 }
 
-.timeslot{
-    grid-column-start:1;
-    grid-column-end: 6;
+.weekday-container{
+border:2px solid black;
     background-color: aqua;
 }
+.weekday-heading{
+    background-color: blue;
+}
 .schedule-entry{
-    border:2px solid purple;
+    border:1px solid purple;
     color:blue
 }
 .hidden{
