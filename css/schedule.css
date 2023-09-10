@@ -1,24 +1,29 @@
-.schedule{
+.schedule {
     border: 3px solid black;
 
 }
-.schedule{
+
+.schedule {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 
 }
 
-.weekday-container{
-border:2px solid black;
+.weekday-container {
+    border: 2px solid black;
     background-color: aqua;
 }
-.weekday-heading{
+
+.weekday-heading {
     background-color: blue;
+    border-bottom: 3px solid black;;
 }
-.schedule-entry{
-    border:1px solid purple;
-    color:blue
+
+.schedule-entry {
+    border: 1px solid purple;
+    color: blue
 }
-.hidden{
-    display:none;
+
+.hidden {
+    display: none;
 }
