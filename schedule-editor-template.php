@@ -1,50 +1,51 @@
-<?php
 
-//$custom_query = new WP_Query($args);
-
-$args = array(
-    'post_type' => 'schedule_content',
-    'posts_per_page' => -1,
-);
-
-$loop = new WP_Query($args);
-
-?>
 <div class="schedule">
-
-        <div class="weekday"><div class="schedule-header">Monday</div></div>
-        <div class="weekday"><div class="schedule-header">Tuesday</div></div>
-        <div class="weekday"><div class="schedule-header">Wednesday</div></div>
-        <div class="weekday"><div class="schedule-header">Thursday</div></div>
-        <div class="weekday"><div class="schedule-header">Friday</div></div>
-    
-
-
     <?php
-    while ($loop->have_posts()) {
-        $loop->the_post();
+    $weekarray = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday');
+    foreach ($weekarray as $value) {
         ?>
+        <div class=WD-con>
+            <?php
+            $the_query = new WP_Query(
+                array(
+                    'post_type' => 'schedule_content',
+                    'posts_per_page' => -1,
+                    'orderby' => 'schedule_starttime',
+                    'order' => 'asc',
+                    'tax_query' => array(
+                        array(
+                            'taxonomy' => 'schedule_weekday',
+                            'field' => 'slug',
+                            'terms' => $value,
+                        )
+                    )
+                )
+            );
 
-        <div class="schedule-entry">
-            <?php the_title();
-            $lesson_name = get_the_terms($loop->ID, 'schedule_subject')[0]->name;
-            $weekday_name = get_the_terms($loop->ID, 'schedule_weekday')[0]->name;
-            $start_time = get_the_terms($loop->ID, 'schedule_starttime')[0]->name;
-            $end_time = get_the_terms($loop->ID, 'schedule_endtime')[0]->name;
+            while ($the_query->have_posts()):
+                $the_query->the_post();
+                ?>
+                <div class="schedule-entry">
+                    <?php the_title();
+                    /*Add boxes, use if to change order*/
+                    $lesson_name = get_the_terms($the_query->ID, 'schedule_subject')[0]->name;
+                    $weekday_name = get_the_terms($the_query->ID, 'schedule_weekday')[0]->name;
+                    $start_time = get_the_terms($the_query->ID, 'schedule_starttime')[0]->name;
+                    $end_time = get_the_terms($the_query->ID, 'schedule_endtime')[0]->name;
 
 
-            // Display the taxonomy name if previous and current post term name don't match
-        
-            echo '<h4>' . $lesson_name . '</h4>'; // Add styling and tags to suite your needs
-            echo '<p class=schedule-time><span class=schedule-heading>Tid: </span>' . $start_time . ' - ' . $end_time . '</p>'; // Add styling and tags to suite your needs
+                    // Display the taxonomy name if previous and current post term name don't match
+                    include(plugin_dir_path(__FILE__) . 'schedule-content-template.php');
+                    ?>
+                </div>
+                <?php
+            endwhile;
             ?>
+            </div>
+            <?php
 
 
-
-        </div>
-
-        <?php
     }
     ?>
 
-</div>
+    </div>

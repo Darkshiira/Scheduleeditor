@@ -7,7 +7,16 @@
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 
 }
+
+.timeslot{
+    grid-column-start:1;
+    grid-column-end: 6;
+    background-color: aqua;
+}
 .schedule-entry{
     border:2px solid purple;
     color:blue
+}
+.hidden{
+    display:none;
 }
