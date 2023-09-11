@@ -17,7 +17,7 @@
                     'post_type' => 'schedule_content',
                     'posts_per_page' => -1,
                     'orderby' => 'schedule_starttime',
-                    'order' => 'asc',
+                  'order' => 'asc',
                     'tax_query' => array(
                         array(
                             'taxonomy' => 'schedule_weekday',
@@ -32,14 +32,16 @@
                 $the_query->the_post();
                 ?>
                 <div class="schedule-entry">
-                    <?php the_title();
+                    <?php 
+
+
                     //Get all info to be displayed for each post
                     
                     $lesson_terms = get_the_terms($the_query->ID, 'schedule_subject');
                     if (!empty($lesson_terms) && is_array($lesson_terms) && isset($lesson_terms[0]->name)) {
                         $lesson_name = $lesson_terms[0]->name;
                     } else {
-                        $lesson_name = 'No subject';
+                        $lesson_name = '';
                     }
                     
                     
@@ -47,14 +49,14 @@
                     if (!empty($start_time_terms) && is_array($start_time_terms) && isset($start_time_terms[0]->name)) {
                         $start_time = $start_time_terms[0]->name;
                     } else {
-                        $start_time = 'No start time';
+                        $start_time = '1';
                     }
 
                     $end_time_terms = get_the_terms($the_query->ID, 'schedule_endtime');
                     if (!empty($end_time_terms) && is_array($end_time_terms) && isset($end_time_terms[0]->name)) {
                         $end_time = $end_time_terms[0]->name;
                     } else {
-                        $end_time = 'No end time';
+                        $end_time = '';
                     }
 
 
