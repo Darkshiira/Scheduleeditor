@@ -34,9 +34,28 @@
                 <div class="schedule-entry">
                     <?php the_title();
                     //Get all info to be displayed for each post
-                    $lesson_name = get_the_terms($the_query->ID, 'schedule_subject')[0]->name;
-                    $start_time = get_the_terms($the_query->ID, 'schedule_starttime')[0]->name;
-                    $end_time = get_the_terms($the_query->ID, 'schedule_endtime')[0]->name;
+                    
+                    $lesson_terms = get_the_terms($the_query->ID, 'schedule_subject');
+                    if (!empty($lesson_terms) && is_array($lesson_terms) && isset($lesson_terms[0]->name)) {
+                        $lesson_name = $lesson_terms[0]->name;
+                    } else {
+                        $lesson_name = 'No subject';
+                    }
+                    
+                    
+                    $start_time_terms = get_the_terms($the_query->ID, 'schedule_starttime');
+                    if (!empty($start_time_terms) && is_array($start_time_terms) && isset($start_time_terms[0]->name)) {
+                        $start_time = $start_time_terms[0]->name;
+                    } else {
+                        $start_time = 'No start time';
+                    }
+
+                    $end_time_terms = get_the_terms($the_query->ID, 'schedule_endtime');
+                    if (!empty($end_time_terms) && is_array($end_time_terms) && isset($end_time_terms[0]->name)) {
+                        $end_time = $end_time_terms[0]->name;
+                    } else {
+                        $end_time = 'No end time';
+                    }
 
 
                     //Use separate template for lesson-contents due to readability
