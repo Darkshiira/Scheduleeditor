@@ -1,5 +1,9 @@
 .schedule {
-    border: 3px solid black;
+    border: 3px solid #2190E0 ;
+    margin: 10px;
+    background-color: lightgrey;
+    border-radius: 10px;
+    text-align: center;
 
 }
 
@@ -10,15 +14,24 @@
 }
 
 .weekday-container {
-    border: 2px solid black;
+    border: 2px solid #2190E0 ;
+    
 }
 
 .weekday-heading {
-    border-bottom: 3px solid black;;
+    border-bottom: 3px solid #2190E0 ;
+    background-color: #219ce0;
+
+    >h3 {
+        margin: 0;
+        padding: 5px;
+    }
 }
 
 .schedule-entry {
-    border: 1px solid rgb(0, 0, 0);
+    border-top: 1px solid #2190E0;
+    border-bottom: 1px solid #2190E0;
+    background-color: aliceblue;
 }
 
 .hidden {
