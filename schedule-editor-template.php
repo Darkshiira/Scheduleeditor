@@ -14,7 +14,7 @@
 //Query for each weekday ($value) and fetch all schedule_contents for this day. Order asc by starttime.
             $the_query = new WP_Query(
                 array(
-                    'post_type' => 'schedule_content',
+                    'post_type' => 'schedulecontent',
                     'posts_per_page' => -1,
                     'orderby' => 'schedule_starttime',
                   'order' => 'asc',

@@ -7,7 +7,7 @@ Author: Hanna, Araceli, Terese, June, and Fosiya.
 Text Domain: schedule-editor
 */
 
-function schedule_content_register_post_type()
+function schedulecontent_register_post_type()
 //Register a custom posttype for holding schedule-specific content
 {
     $labels = array(
@@ -35,14 +35,14 @@ function schedule_content_register_post_type()
             // 'thumbnail',
             // 'page-attributes'
         ),
-        'rewrite' => array('slug' => 'schedule_content'),
+        'rewrite' => array('slug' => 'schedulecontent'),
         'show_in_rest' => true,
         'menu_position' => 2,
     );
-    register_post_type('schedule_content', $args);
+    register_post_type('schedulecontent', $args);
 }
 
-add_action('init', 'schedule_content_register_post_type');
+add_action('init', 'schedulecontent_register_post_type');
 //Registers post-type on init hook
 
 
@@ -71,7 +71,7 @@ function schedule_content_register_taxonomies()
         'show_admin_column' => true,
         'show_in_rest' => true
     );
-    register_taxonomy('schedule_subject', array('schedule_content'), $argsSubject);
+    register_taxonomy('schedule_subject', array('schedulecontent'), $argsSubject);
     //TODO: Explore if possible to preset weekday contents and remove from admin-menu
     //Adds a category for the weekdays
     $labelsWeekday = array(
@@ -95,7 +95,7 @@ function schedule_content_register_taxonomies()
         'show_admin_column' => true,
         'show_in_rest' => true
     );
-    register_taxonomy('schedule_weekday', array('schedule_content'), $argsWeekday);
+    register_taxonomy('schedule_weekday', array('schedulecontent'), $argsWeekday);
 
     //Adds a category for the start-times of the class
     $labelsStarttime = array(
@@ -120,7 +120,7 @@ function schedule_content_register_taxonomies()
         'show_in_rest' => true
     );
 
-    register_taxonomy('schedule_starttime', array('schedule_content'), $argsStarttime);
+    register_taxonomy('schedule_starttime', array('schedulecontent'), $argsStarttime);
     //Adds a category for the end-times of the class
     $labelsEndtime = array(
         'name' => __('End time', 'schedule-editor'),
@@ -144,7 +144,7 @@ function schedule_content_register_taxonomies()
         'show_in_rest' => true
     );
 
-    register_taxonomy('schedule_endtime', array('schedule_content'), $argsEndtime);
+    register_taxonomy('schedule_endtime', array('schedulecontent'), $argsEndtime);
 
 }
 add_action('init', 'schedule_content_register_taxonomies');
@@ -152,23 +152,23 @@ add_action('init', 'schedule_content_register_taxonomies');
 
 //NEW
 
-function schedule_content_sort($post)
+function schedulecontent_sort($post)
 //Adds a box for meta-data to the schedule_contents edit screen?
 {
     add_meta_box(
         'schedule_contents_sort_box',//Div-id of added box
         'Position in day',//Header of meta-box
         'custom_post_order',//The box-contents to add?
-        'schedule_content',//post-type
+        'schedulecontent',//post-type
         'side'//Placement of meta-box
     );
 }
-add_action('add_meta_boxes', 'schedule_content_sort');
+add_action('add_meta_boxes', 'schedulecontent_sort');
 /* Add a field to the metabox */
 
 function custom_post_order($post)
 {
-    wp_nonce_field(basename(__FILE__), 'schedule_content_order_nonce');
+    wp_nonce_field(basename(__FILE__), 'schedulecontent_order_nonce');
     $current_pos = get_post_meta($post->ID, '_custom_post_order', true); ?>
     <p>Enter the position at which you would like the lesson to appear. </p>
     <p><input type="number" name="pos" value="<?php echo $current_pos; ?>" /></p>
@@ -179,7 +179,7 @@ function custom_post_order($post)
 function save_custom_post_order($post_id)
 /* Saves the input to post_meta_data? */
 {
-    if (!isset($_POST['schedule_content_order_nonce']) || !wp_verify_nonce($_POST['schedule_content_order_nonce'], basename(__FILE__))) {
+    if (!isset($_POST['schedulecontent_order_nonce']) || !wp_verify_nonce($_POST['schedulecontent_order_nonce'], basename(__FILE__))) {
         return;
     }
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
@@ -204,7 +204,7 @@ function add_custom_post_order_column($columns)
         )
     );
 }
-add_filter('manage_posts_columns', 'add_custom_post_order_column');
+add_filter('manage_schedulecontent_posts_columns', 'add_custom_post_order_column');
 
 
 function display_custom_post_order_value($column, $post_id)
@@ -219,7 +219,7 @@ add_action('manage_posts_custom_column', 'display_custom_post_order_value', 10, 
 function schedule_content_post_order_sort($query)
 {
     //$query_posttype=$query->get('post_type')
-    if ($query->get('post_type') == 'schedule_content') {
+    if ($query->get('post_type') == 'schedulecontent') {
         $query->set('orderby', 'meta_value');
         $query->set('meta_key', '_custom_post_order');
     }
