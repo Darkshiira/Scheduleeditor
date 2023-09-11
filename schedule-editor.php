@@ -28,11 +28,11 @@ function schedule_content_register_post_type()
         'public' => true,
         'hierarchical' => false,
         'supports' => array(
-        'title',
+            'title',
             // 'editor', 
-            'excerpt', 
+            'excerpt',
             //'custom-fields',
-           // 'thumbnail',
+            // 'thumbnail',
             // 'page-attributes'
         ),
         'rewrite' => array('slug' => 'schedule_content'),
@@ -72,7 +72,7 @@ function schedule_content_register_taxonomies()
         'show_in_rest' => true
     );
     register_taxonomy('schedule_subject', array('schedule_content'), $argsSubject);
-//TODO: Explore if possible to preset weekday contents and remove from admin-menu
+    //TODO: Explore if possible to preset weekday contents and remove from admin-menu
     //Adds a category for the weekdays
     $labelsWeekday = array(
         'name' => __('Weekday', 'schedule-editor'),
@@ -97,7 +97,7 @@ function schedule_content_register_taxonomies()
     );
     register_taxonomy('schedule_weekday', array('schedule_content'), $argsWeekday);
 
-       //Adds a category for the start-times of the class
+    //Adds a category for the start-times of the class
     $labelsStarttime = array(
         'name' => __('Start time', 'schedule-editor'),
         'singular_name' => __('Start time', 'schedule-editor'),
@@ -151,72 +151,81 @@ add_action('init', 'schedule_content_register_taxonomies');
 //Adds the taxonomies to the schedule_content post-type
 
 //NEW
-/* Create custom meta data box to the post edit screen */
 
-function jpen_custom_post_sort( $post ){
-  add_meta_box( 
-    'custom_post_sort_box', 
-    'Position in List of Posts', 
-    'jpen_custom_post_order', 
-    'schedule_content' ,
-    'side'
+function schedule_content_sort($post)
+//Adds a box for meta-data to the schedule_contents edit screen?
+{
+    add_meta_box(
+        'schedule_contents_sort_box',//Div-id of added box
+        'Position in day',//Header of meta-box
+        'custom_post_order',//The box-contents to add?
+        'schedule_content',//post-type
+        'side'//Placement of meta-box
     );
 }
-add_action( 'add_meta_boxes', 'jpen_custom_post_sort' );
+add_action('add_meta_boxes', 'schedule_content_sort');
 /* Add a field to the metabox */
 
-function jpen_custom_post_order( $post ) {
-    wp_nonce_field( basename( __FILE__ ), 'jpen_custom_post_order_nonce' );
-    $current_pos = get_post_meta( $post->ID, '_custom_post_order', true); ?>
-    <p>Enter the position at which you would like the post to appear. For exampe, post "1" will appear first, post "2" second, and so forth.</p>
+function custom_post_order($post)
+{
+    wp_nonce_field(basename(__FILE__), 'schedule_content_order_nonce');
+    $current_pos = get_post_meta($post->ID, '_custom_post_order', true); ?>
+    <p>Enter the position at which you would like the lesson to appear. </p>
     <p><input type="number" name="pos" value="<?php echo $current_pos; ?>" /></p>
     <?php
-  }
-/* Save the input to post_meta_data */
+}
 
-function jpen_save_custom_post_order( $post_id ){
-    if ( !isset( $_POST['jpen_custom_post_order_nonce'] ) || !wp_verify_nonce( $_POST['jpen_custom_post_order_nonce'], basename( __FILE__ ) ) ){
-      return;
-    } 
-    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ){
-      return;
+
+function save_custom_post_order($post_id)
+/* Saves the input to post_meta_data? */
+{
+    if (!isset($_POST['schedule_content_order_nonce']) || !wp_verify_nonce($_POST['schedule_content_order_nonce'], basename(__FILE__))) {
+        return;
     }
-    if ( ! current_user_can( 'edit_post', $post_id ) ){
-      return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
     }
-    if ( isset( $_REQUEST['pos'] ) ) {
-      update_post_meta( $post_id, '_custom_post_order', sanitize_text_field( $_POST['pos'] ) );
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
     }
-  }
-  add_action( 'save_post', 'jpen_save_custom_post_order' );
-
-  /* Add custom post order column to post list */
-
-function jpen_add_custom_post_order_column( $columns ){
-    return array_merge ( $columns,
-      array( 'pos' => 'Position', ));
-  }
-  add_filter('manage_posts_columns' , 'jpen_add_custom_post_order_column');
-  
-  /* Display custom post order in the post list */
-
-function jpen_custom_post_order_value( $column, $post_id ){
-    if ($column == 'pos' ){
-      echo '<p>' . get_post_meta( $post_id, '_custom_post_order', true) . '</p>';
+    if (isset($_REQUEST['pos'])) {
+        update_post_meta($post_id, '_custom_post_order', sanitize_text_field($_POST['pos']));
     }
-  }
-  add_action( 'manage_posts_custom_column' , 'jpen_custom_post_order_value' , 10 , 2 );
+}
+add_action('save_post', 'save_custom_post_order');
 
-  function jpen_custom_post_order_sort( $query ){
+
+function add_custom_post_order_column($columns)
+//Adds a new column to the scheduleposts overview in adminpanel
+{
+    return array_merge(
+        $columns,
+        array('pos' => 'Position in day of schedule',
+        )
+    );
+}
+add_filter('manage_posts_columns', 'add_custom_post_order_column');
+
+
+function display_custom_post_order_value($column, $post_id)
+//Adds the value added for custom position to the schedule-posts overview in adminpanel
+{
+    if ($column == 'pos') {
+        echo '<p>' . get_post_meta($post_id, '_custom_post_order', true) . '</p>';
+    }
+}
+add_action('manage_posts_custom_column', 'display_custom_post_order_value', 10, 2);
+
+function schedule_content_post_order_sort($query)
+{
     //$query_posttype=$query->get('post_type')
-    if ( $query->get('post_type')=='schedule_content' ){
-      $query->set( 'orderby', 'meta_value' );
-      $query->set( 'meta_key', '_custom_post_order' );
-      $query->set( 'order' , 'ASC' );
+    if ($query->get('post_type') == 'schedule_content') {
+        $query->set('orderby', 'meta_value');
+        $query->set('meta_key', '_custom_post_order');
     }
-  }
-  add_action( 'pre_get_posts' , 'jpen_custom_post_order_sort' );
-  //END NEW
+}
+add_action('pre_get_posts', 'schedule_content_post_order_sort'); //Adds custom soting if posttype in query is schedule_contents
+//END NEW
 
 function schedule_content_styles()
 //Adds specific styling for schedule
@@ -226,7 +235,7 @@ function schedule_content_styles()
 add_action('wp_enqueue_scripts', 'schedule_content_styles');
 
 class Custom_Schedule_Widget extends WP_Widget
-//Creates a new custom schedule-widgett?
+    //Creates a new custom schedule-widgett?
 {
     public function __construct()
     {
@@ -251,12 +260,12 @@ class Custom_Schedule_Widget extends WP_Widget
 }
 function custom_schedule_shortcode_widget()
 {
-    $widget = new Custom_Schedule_Widget();//Returns a new instace of the widget where shortcode is found?
+    $widget = new Custom_Schedule_Widget(); //Returns a new instace of the widget where shortcode is found?
     return $widget->shortcode();
 }
 function register_schedule_widget()
 {
     register_widget('Custom_Schedule_Widget');
 }
-add_shortcode('Custom-Schedule-Widget', 'custom_schedule_shortcode_widget');//Registers custom schedule widget
-add_action('widgets_init', 'register_schedule_widget');//Registers schedule-widget on widgit init.
+add_shortcode('Custom-Schedule-Widget', 'custom_schedule_shortcode_widget'); //Registers custom schedule widget
+add_action('widgets_init', 'register_schedule_widget'); //Registers schedule-widget on widgit init.
